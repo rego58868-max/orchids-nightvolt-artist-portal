@@ -1,0 +1,143 @@
+2026-02-21T07:23:02.327Z [console][log] [Fast Refresh] done in 324ms
+2026-02-21T07:23:02.373Z [console][debug] __ORCHIDS_NAVIGATE__ http://localhost:3000/
+2026-02-21T07:23:29.838Z [console][log] [Fast Refresh] rebuilding
+2026-02-21T07:23:30.371Z [console][log] [Fast Refresh] done in 533ms
+2026-02-21T07:23:30.412Z [console][debug] __ORCHIDS_NAVIGATE__ http://localhost:3000/
+2026-02-21T07:23:30.778Z [console][log] [Fast Refresh] rebuilding
+2026-02-21T07:23:31.118Z [console][log] [Fast Refresh] done in 340ms
+2026-02-21T07:23:31.168Z [console][debug] __ORCHIDS_NAVIGATE__ http://localhost:3000/
+2026-02-21T07:23:55.890Z [console][log] [Fast Refresh] rebuilding
+2026-02-21T07:23:56.184Z [console][log] [Fast Refresh] done in 294ms
+2026-02-21T07:23:56.952Z [console][debug] __ORCHIDS_NAVIGATE__ http://localhost:3000/
+2026-02-21T07:24:40.067Z [console][log] [Fast Refresh] rebuilding
+2026-02-21T07:24:43.354Z [console][log] [Fast Refresh] done in 3288ms
+2026-02-21T07:26:04.853Z [console][log] [Fast Refresh] rebuilding
+2026-02-21T07:26:05.555Z [console][log] [Fast Refresh] done in 702ms
+2026-02-21T07:22:48.565Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:23:01.517Z [network][GET 200] /_next/static/webpack/1ebe03ed2cc0cefd.webpack.hot-update.json
+  response: {"c":["app/layout","webpack"],"r":[],"m":[]}
+2026-02-21T07:23:02.015Z [network][GET 200] /_next/static/webpack/0a61f5f6b58a49c5.webpack.hot-update.json
+  response: {"c":["app/layout","webpack"],"r":[],"m":[]}
+2026-02-21T07:23:02.239Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:23:02.295Z [network][GET 200] /_next/static/webpack/19a0ee6fe3de27f8.webpack.hot-update.json
+  response: {"c":["app/layout","webpack"],"r":[],"m":[]}
+2026-02-21T07:23:02.328Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:23:02.354Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:23:30.363Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:23:30.364Z [network][GET 200] /_next/static/webpack/44e54f7c48645fb8.webpack.hot-update.json
+  response: {"c":["app/layout","webpack"],"r":[],"m":[]}
+2026-02-21T07:23:31.108Z [network][GET 200] /_next/static/webpack/2f1226a8fbf5d0dc.webpack.hot-update.json
+  response: {"c":["app/layout","webpack"],"r":[],"m":[]}
+2026-02-21T07:23:31.156Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:23:56.178Z [network][GET 200] /_next/static/webpack/af3451bc70f9583f.webpack.hot-update.json
+  response: {"c":["app/layout","webpack"],"r":[],"m":[]}
+2026-02-21T07:23:56.937Z [network][GET 200] 
+  response: 1:"$Sreact.fragment"
+3:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+4:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+6:I["(app-pages-browser)/./src/components/ErrorReporter.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+7:I["(app-pages-browser)/./node_modules/next/dist/client/script.js",["app/layout","static/chunks/app/layout.js"],""]
+b:I["(app-pages-browser)/./src/components/ui/sonner.tsx",["app/layout","static/chunks/app/layout.js"],"Toaster"]
+c:I["(app-pages-browser)/./src/visual-edits/VisualEditsMessenger.tsx",["app/layout","static/chunks/app/layout.js"],"default"]
+f:I["(app-pages-browser)/./src/components/LoginForm.tsx",["app/page","static/chunks/app/page.js"],"LoginForm"]
+10:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadataOutlet"]
+1d:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+22:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/metadata-boundary.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+25:"$Sreact.suspense"
+26:I["(app-pages-browser)/./node_modules/next/dist/client/components/metadata/async-metadata.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"AsyncMetadata"]
+5:{"name":"RootLayout","env":"Server","key":null,"owner":null,"stack":[],"props":{"children":["$","$L3",null,{"parallelRouterKey":"children","err... [truncated]
+2026-02-21T07:24:41.010Z [network][GET 200] /_next/static/webpack/a235312c4eee65aa.webpack.hot-update.json
+  response: {"c":["webpack"],"r":[],"m":[]}
+2026-02-21T07:26:05.551Z [network][GET 200] /_next/static/webpack/ff403eb3c554fc4d.webpack.hot-update.json
+  response: {"c":["webpack"],"r":[],"m":[]}
