@@ -103,6 +103,10 @@ export async function verifyCredentials(email: string, password: string) {
     throw new Error('BLOCKED');
   }
 
+  if (artist.requiresApproval && !artist.isApproved) {
+    throw new Error('PENDING_APPROVAL');
+  }
+
   if (artist.isFrozen && artist.isManager) {
     throw new Error('FROZEN');
   }

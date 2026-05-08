@@ -193,7 +193,7 @@ export default function AdminPitchingsPage() {
                           onChange={e => setEditing(prev => ({ ...prev, [p.id]: { ...prev[p.id], note: e.target.value } }))}
                           rows={3}
                           placeholder="Напишите ответ для артиста (необязательно)..."
-                          className="w-full border border-border rounded-xl px-3 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 resize-none transition-colors"
+                          className="w-full border border-border rounded-xl px-3 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#cd792f]/40 focus:border-[#cd792f] resize-none transition-colors"
                         />
                         <div className="flex gap-2">
                           <button onClick={() => handleSave(p.id)} disabled={saving === p.id}

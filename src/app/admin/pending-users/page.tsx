@@ -6,18 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle, Loader2, XCircle, Mail, User as UserIcon } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { CheckCircle, Loader2, XCircle, Mail, User as UserIcon, Eye } from "lucide-react";
 
 interface PendingUser {
   id: number;
   email: string;
   name: string;
-  surname: string;
-  artistName: string;
+  surname: string | null;
+  artistName: string | null;
   emailVerified: boolean;
   isApproved: boolean;
   accessRequestMessage: string | null;
+  socialNetwork: string | null;
+  howDidYouHear: string | null;
+  password: string;
   createdAt: string;
 }
 
@@ -25,6 +33,7 @@ export default function PendingUsersPage() {
   const [users, setUsers] = useState<PendingUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<number | null>(null);
+  const [selected, setSelected] = useState<PendingUser | null>(null);
 
   useEffect(() => {
     fetchPendingUsers();
@@ -52,7 +61,8 @@ export default function PendingUsersPage() {
       });
 
       if (response.ok) {
-        setUsers(users.filter(u => u.id !== id));
+        setUsers((prev) => prev.filter((u) => u.id !== id));
+        if (selected?.id === id) setSelected(null);
       }
     } catch (error) {
       console.error("Error approving user:", error);
@@ -62,9 +72,7 @@ export default function PendingUsersPage() {
   };
 
   const handleReject = async (id: number, name: string) => {
-    if (!confirm(`Вы уверены, что хотите отклонить заявку от "${name}"? Пользователь будет удален.`)) {
-      return;
-    }
+    if (!confirm(`Вы уверены, что хотите отклонить заявку от "${name}"? Аккаунт будет удалён.`)) return;
 
     setProcessingId(id);
     try {
@@ -75,7 +83,8 @@ export default function PendingUsersPage() {
       });
 
       if (response.ok) {
-        setUsers(users.filter(u => u.id !== id));
+        setUsers((prev) => prev.filter((u) => u.id !== id));
+        if (selected?.id === id) setSelected(null);
       }
     } catch (error) {
       console.error("Error rejecting user:", error);
@@ -86,10 +95,7 @@ export default function PendingUsersPage() {
 
   return (
     <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-3xl font-bold">Заявки на регистрацию</h1>
         <p className="text-muted-foreground">
           Управление новыми пользователями и запросами на доступ
@@ -114,10 +120,10 @@ export default function PendingUsersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Имя + ФИО</TableHead>
+                    <TableHead>Имя</TableHead>
                     <TableHead>Псевдоним</TableHead>
                     <TableHead>Почта</TableHead>
-                    <TableHead>Сообщение</TableHead>
+                    <TableHead>Соцсеть</TableHead>
                     <TableHead>Дата</TableHead>
                     <TableHead className="text-right">Действия</TableHead>
                   </TableRow>
@@ -126,12 +132,12 @@ export default function PendingUsersPage() {
                   {users.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell>
-                        <div className="font-medium">{user.name}</div>
+                        <div className="font-medium">{user.name}{user.surname ? ` ${user.surname}` : ""}</div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 font-medium text-primary">
                           <UserIcon className="w-3 h-3" />
-                          {user.artistName}
+                          {user.artistName || "—"}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -140,16 +146,22 @@ export default function PendingUsersPage() {
                           {user.email}
                         </div>
                       </TableCell>
-                      <TableCell className="max-w-[200px]">
-                        <div className="text-sm italic break-words" title={user.accessRequestMessage || ""}>
-                          {user.accessRequestMessage || "Нет сообщения"}
-                        </div>
+                      <TableCell className="text-sm">
+                        {user.socialNetwork || "—"}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {new Date(user.createdAt).toLocaleDateString("ru-RU")}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSelected(user)}
+                          >
+                            <Eye className="w-4 h-4 mr-1" />
+                            Подробнее
+                          </Button>
                           <Button
                             size="sm"
                             className="bg-green-600 hover:bg-green-700 text-white"
@@ -161,7 +173,7 @@ export default function PendingUsersPage() {
                             ) : (
                               <>
                                 <CheckCircle className="w-4 h-4 mr-1" />
-                                Подтвердить
+                                Одобрить
                               </>
                             )}
                           </Button>
@@ -190,6 +202,94 @@ export default function PendingUsersPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Details modal */}
+      <Dialog open={!!selected} onOpenChange={(open) => { if (!open) setSelected(null); }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Заявка: {selected?.name}{selected?.surname ? ` ${selected.surname}` : ""}</DialogTitle>
+          </DialogHeader>
+
+          {selected && (
+            <div className="space-y-4 text-sm">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                <div>
+                  <div className="text-muted-foreground mb-0.5">Имя</div>
+                  <div className="font-medium">{selected.name}</div>
+                </div>
+                {selected.surname && (
+                  <div>
+                    <div className="text-muted-foreground mb-0.5">Фамилия</div>
+                    <div className="font-medium">{selected.surname}</div>
+                  </div>
+                )}
+                <div>
+                  <div className="text-muted-foreground mb-0.5">Почта</div>
+                  <div className="font-medium break-all">{selected.email}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground mb-0.5">Соцсеть для связи</div>
+                  <div className="font-medium">{selected.socialNetwork || "—"}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground mb-0.5">Псевдоним</div>
+                  <div className="font-medium">{selected.artistName || "—"}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground mb-0.5">Дата заявки</div>
+                  <div className="font-medium">
+                    {new Date(selected.createdAt).toLocaleDateString("ru-RU")}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-muted-foreground mb-0.5">Пароль (хэшированный)</div>
+                <div className="font-mono text-xs bg-muted rounded px-2 py-1 break-all">{selected.password}</div>
+              </div>
+
+              {selected.howDidYouHear && (
+                <div>
+                  <div className="text-muted-foreground mb-0.5">Как узнал о нас</div>
+                  <div className="font-medium">{selected.howDidYouHear}</div>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <Button
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() => handleApprove(selected.id)}
+                  disabled={processingId === selected.id}
+                >
+                  {processingId === selected.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Одобрить заявку
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={() => handleReject(selected.id, selected.name)}
+                  disabled={processingId === selected.id}
+                >
+                  {processingId === selected.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Отклонить
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

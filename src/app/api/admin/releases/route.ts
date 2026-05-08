@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSessionFromRequest } from '@/lib/auth';
 import { db } from '@/db';
 import { releases, artists } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, count, like, or, sql } from 'drizzle-orm';
+
+const PAGE_SIZE = 20;
 
 export async function GET(request: NextRequest) {
   try {
-    // Authentication check - используем bearer token
     const session = await getSessionFromRequest(request);
 
     if (!session) {
@@ -23,7 +24,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Получаем все релизы с информацией об артистах
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const search = searchParams.get('search') || '';
+    const offset = (page - 1) * PAGE_SIZE;
+
+    // Build search condition
+    const searchCondition = search
+      ? or(
+          like(releases.title, `%${search}%`),
+          like(releases.mainArtist, `%${search}%`),
+          like(releases.upc, `%${search}%`),
+          like(releases.label, `%${search}%`)
+        )
+      : undefined;
+
+    // Get total count for pagination
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(releases)
+      .where(searchCondition);
+
+    // Get paginated releases
     const allReleases = await db
       .select({
         id: releases.id,
@@ -45,9 +67,20 @@ export async function GET(request: NextRequest) {
       })
       .from(releases)
       .leftJoin(artists, eq(releases.artistId, artists.id))
-      .orderBy(desc(releases.createdAt));
+      .where(searchCondition)
+      .orderBy(desc(releases.createdAt))
+      .limit(PAGE_SIZE)
+      .offset(offset);
 
-    return NextResponse.json({ releases: allReleases });
+    return NextResponse.json({
+      releases: allReleases,
+      pagination: {
+        page,
+        pageSize: PAGE_SIZE,
+        total,
+        totalPages: Math.ceil(total / PAGE_SIZE),
+      },
+    });
   } catch (error) {
     console.error('Error fetching releases:', error);
     return NextResponse.json(

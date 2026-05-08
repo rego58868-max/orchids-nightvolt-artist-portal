@@ -1,17 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Search, Calendar, ChevronDown, Download, Loader2, AlertCircle, CheckCircle, FileText, Info, ListMusic, Edit, Link as LinkIcon, Trash2 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Search, Calendar, ChevronDown, Download, Loader2, Info, ListMusic, Edit, Trash2, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 interface Release {
@@ -32,222 +29,186 @@ interface Release {
   genre: string;
 }
 
-const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; color: string }> = {
-  draft:            { label: "Черновик",              variant: "secondary",    color: "bg-muted text-muted-foreground border-border" },
-  on_moderation:    { label: "На модерации",           variant: "default",      color: "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border-yellow-500/30" },
-  approved:         { label: "Одобрено",              variant: "outline",      color: "bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30" },
-  published:        { label: "Опубликован",            variant: "outline",      color: "bg-teal-500/15 text-teal-600 dark:text-teal-400 border-teal-500/30" },
-  rejected:         { label: "Отклонено",             variant: "destructive",  color: "bg-destructive/15 text-destructive border-destructive/30" },
-  requires_changes: { label: "Требуются изменения",   variant: "destructive",  color: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30" },
+interface Pagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+const statusMap: Record<string, { label: string; color: string }> = {
+  draft:            { label: "Черновик",            color: "bg-muted text-muted-foreground border-border" },
+  on_moderation:    { label: "На модерации",         color: "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border-yellow-500/30" },
+  approved:         { label: "Одобрено",            color: "bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30" },
+  published:        { label: "Опубликован",          color: "bg-[#cd792f]/15 text-[#b8661f] dark:text-[#b8661f] border-[#cd792f]/30" },
+  rejected:         { label: "Отклонено",           color: "bg-destructive/15 text-destructive border-destructive/30" },
+  requires_changes: { label: "Требуются изменения", color: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30" },
 };
 
 export default function AdminReleases() {
   const router = useRouter();
   const [releases, setReleases] = useState<Release[]>([]);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedRelease, setSelectedRelease] = useState<Release | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newStatus, setNewStatus] = useState("");
-  const [moderatorComment, setModeratorComment] = useState("");
-  const [upc, setUpc] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  
-  // Фильтры
+  const [error, setError] = useState<string | null>(null);
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [platformFilter, setPlatformFilter] = useState("all");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [createdDateFilter, setCreatedDateFilter] = useState("");
-  const [sortBy, setSortBy] = useState("releaseDate");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [page, setPage] = useState(1);
 
+  // Delete state
+  const [deleteTarget, setDeleteTarget] = useState<Release | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounce search input
   useEffect(() => {
-    fetchReleases();
-  }, []);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setPage(1);
+    }, 400);
+    return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
+  }, [searchQuery]);
 
-  const fetchReleases = async () => {
+  const fetchReleases = useCallback(async (currentPage: number, search: string) => {
+    setLoading(true);
+    setError(null);
     try {
       const token = localStorage.getItem("bearer_token");
-      const response = await fetch("/api/admin/releases", {
+      const params = new URLSearchParams({ page: String(currentPage) });
+      if (search) params.set('search', search);
+
+      const response = await fetch(`/api/admin/releases?${params}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-      
+
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API error:", errorData);
-        
         if (response.status === 401 || response.status === 403) {
           router.push("/");
           return;
         }
-      }
-      
-      const data = await response.json();
-      setReleases(data.releases || []);
-    } catch (error) {
-      console.error("Error fetching releases:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const openModal = (release: Release) => {
-    setSelectedRelease(release);
-    setNewStatus(release.status);
-    setModeratorComment(release.moderatorComment || "");
-    setUpc(release.upc || "");
-    setMessage(null);
-    setIsModalOpen(true);
-  };
-
-  const handleUpdate = async () => {
-    if (!selectedRelease) return;
-
-    setIsSaving(true);
-    setMessage(null);
-
-    try {
-      const response = await fetch(`/api/admin/releases/${selectedRelease.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: newStatus,
-          moderatorComment,
-          upc: upc || null,
-        }),
-      });
-
-      if (!response.ok) {
         const data = await response.json();
-        setMessage({ type: "error", text: data.error || "Ошибка при обновлении" });
+        setError(data.error || `Ошибка ${response.status}`);
         return;
       }
 
-      setMessage({ type: "success", text: "Релиз успешно обновлён!" });
-      fetchReleases();
-      setTimeout(() => setIsModalOpen(false), 1500);
-    } catch (error) {
-      setMessage({ type: "error", text: "Ошибка подключения к серверу" });
+      const data = await response.json();
+      setReleases(data.releases || []);
+      setPagination(data.pagination || null);
+    } catch (err) {
+      setError("Ошибка подключения к серверу");
     } finally {
-      setIsSaving(false);
+      setLoading(false);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    fetchReleases(page, debouncedSearch);
+  }, [fetchReleases, page, debouncedSearch]);
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      const token = localStorage.getItem("bearer_token");
+      const res = await fetch(`/api/admin/releases/${deleteTarget.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setDeleteError(data.error || `Ошибка ${res.status}`);
+        return;
+      }
+      setDeleteTarget(null);
+      // Stay on current page; if it becomes empty go back one page
+      const newTotal = (pagination?.total ?? 1) - 1;
+      const newTotalPages = Math.ceil(newTotal / (pagination?.pageSize ?? 20));
+      const nextPage = page > newTotalPages && newTotalPages > 0 ? newTotalPages : page;
+      setPage(nextPage);
+      fetchReleases(nextPage, debouncedSearch);
+    } catch {
+      setDeleteError("Ошибка подключения к серверу");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
+  // Client-side date filtering (applied on top of server pagination)
+  const filteredReleases = releases.filter(release => {
+    const matchesStartDate = startDateFilter === "" ||
+      (release.releaseDate && new Date(release.releaseDate) >= new Date(startDateFilter));
+    const matchesCreatedDate = createdDateFilter === "" ||
+      (new Date(release.createdAt) >= new Date(createdDateFilter));
+    return matchesStartDate && matchesCreatedDate;
+  }).sort((a, b) => {
+    if (sortBy === "releaseDate") {
+      return (b.releaseDate ? new Date(b.releaseDate).getTime() : 0) -
+             (a.releaseDate ? new Date(a.releaseDate).getTime() : 0);
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   const handleDownloadCatalog = () => {
     const headers = ["Название", "Артист", "UPC", "Лейбл", "Дата создания", "Дата релиза", "Статус", "Жанр"];
-    const rows = sortedAndFilteredReleases.map(r => [
+    const rows = filteredReleases.map(r => [
       r.title,
       r.mainArtist,
       r.upc || "-",
       r.label,
-      new Date(r.createdAt).toISOString().split("T")[0],
-      r.releaseDate ? new Date(r.releaseDate).toISOString().split("T")[0] : "-",
-        (statusMap[r.status] || statusMap.draft).label,
-      r.genre
+      formatDate(r.createdAt),
+      r.releaseDate ? formatDate(r.releaseDate) : "-",
+      (statusMap[r.status] || statusMap.draft).label,
+      r.genre,
     ]);
-
     const csvContent = [
       headers.join(","),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(",")),
     ].join("\n");
-
-    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob(["﻿" + csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `nightvolt-catalog-${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
   };
 
-  // Фильтрация и сортировка
-  const sortedAndFilteredReleases = releases
-    .filter(release => {
-      const matchesSearch = searchQuery === "" || 
-        release.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        release.mainArtist.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        release.upc?.includes(searchQuery) ||
-        release.label.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesStartDate = startDateFilter === "" || 
-        (release.releaseDate && new Date(release.releaseDate) >= new Date(startDateFilter));
-      
-      const matchesCreatedDate = createdDateFilter === "" || 
-        (new Date(release.createdAt) >= new Date(createdDateFilter));
-      
-      return matchesSearch && matchesStartDate && matchesCreatedDate;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "releaseDate":
-          const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
-          const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
-          return dateB - dateA;
-        case "createdAt":
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        default:
-          return 0;
-      }
-    });
-
   const formatDate = (date: string) => {
     const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   };
-
-  const isEditable = (status: string) => status === "requires_changes";
 
   return (
     <div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Управление релизами</h1>
-        <p className="text-muted-foreground">
-          Модерация и управление релизами артистов
-        </p>
+        <p className="text-muted-foreground">Модерация и управление релизами артистов</p>
       </motion.div>
 
-      {/* Блок поиска и фильтров */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="mb-6"
-      >
+      {/* Search & Filters */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6">
         <Card className="border-border/50 shadow-sm bg-muted/20">
           <CardContent className="pt-6">
             <div className="space-y-4">
-              {/* Поиск */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Поиск по UPC, ISRC, треку, исполнителю, лейблу"
+                  placeholder="Поиск по UPC, треку, исполнителю, лейблу"
                   className="pl-10 h-12 bg-background border-border"
                 />
               </div>
-
-              {/* Фильтры */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Select value={platformFilter} onValueChange={setPlatformFilter}>
-                  <SelectTrigger className="h-12 bg-background border-border">
-                    <SelectValue placeholder="Площадки" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Все площадки</SelectItem>
-                    <SelectItem value="spotify">Spotify</SelectItem>
-                    <SelectItem value="apple">Apple Music</SelectItem>
-                    <SelectItem value="youtube">YouTube Music</SelectItem>
-                  </SelectContent>
-                </Select>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative">
                   <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none z-10" />
                   <Input
@@ -258,7 +219,6 @@ export default function AdminReleases() {
                     onChange={(e) => setStartDateFilter(e.target.value)}
                   />
                 </div>
-
                 <div className="relative">
                   <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none z-10" />
                   <Input
@@ -275,19 +235,18 @@ export default function AdminReleases() {
         </Card>
       </motion.div>
 
-      {/* Верхний блок управления */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="mb-6 flex items-center justify-between"
-      >
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-1">Всего релизов: {sortedAndFilteredReleases.length}</h2>
+          <h2 className="text-2xl font-bold mb-1">
+            {pagination ? `Всего релизов: ${pagination.total}` : "Релизы"}
+          </h2>
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="border-0 h-auto p-0 w-auto hover:bg-transparent">
               <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-                <span className="text-sm">Сортировать по: {sortBy === "releaseDate" ? "Дата старта" : sortBy === "createdAt" ? "Дата создания" : "Дата релиза"}</span>
+                <span className="text-sm">
+                  Сортировать по: {sortBy === "releaseDate" ? "Дата старта" : "Дата создания"}
+                </span>
                 <ChevronDown className="w-4 h-4" />
               </div>
             </SelectTrigger>
@@ -297,25 +256,27 @@ export default function AdminReleases() {
             </SelectContent>
           </Select>
         </div>
-
-        <Button 
-          variant="outline" 
-          onClick={handleDownloadCatalog}
-          className="h-11 px-6 border-2"
-        >
+        <Button variant="outline" onClick={handleDownloadCatalog} className="h-11 px-6 border-2">
           <Download className="w-4 h-4 mr-2" />
           Скачать каталог
         </Button>
       </motion.div>
 
-      {/* Карточки релизов */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="space-y-4"
-      >
-        {loading ? (
+      {/* Release Cards */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="space-y-4">
+        {error ? (
+          <Card>
+            <CardContent className="py-12">
+              <div className="text-center text-destructive flex flex-col items-center gap-3">
+                <AlertCircle className="w-8 h-8" />
+                <p>{error}</p>
+                <Button variant="outline" onClick={() => fetchReleases(page, debouncedSearch)}>
+                  Повторить
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : loading ? (
           <Card>
             <CardContent className="py-12">
               <div className="text-center">
@@ -324,149 +285,208 @@ export default function AdminReleases() {
               </div>
             </CardContent>
           </Card>
-        ) : sortedAndFilteredReleases.length === 0 ? (
+        ) : filteredReleases.length === 0 ? (
           <Card>
             <CardContent className="py-12">
-              <div className="text-center text-muted-foreground">
-                Релизы не найдены
-              </div>
+              <div className="text-center text-muted-foreground">Релизы не найдены</div>
             </CardContent>
           </Card>
         ) : (
-          sortedAndFilteredReleases.map((release) => (
-            <Card key={release.id} className="overflow-hidden hover:shadow-md transition-shadow border-border">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-6">
-                  {/* Обложка */}
-                  <div className="relative w-32 h-32 rounded-md overflow-hidden shrink-0 bg-muted">
-                    <Image
-                      src={release.coverUrl || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f"}
-                      alt={release.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-
-                  {/* Контент */}
-                  <div className="flex-1 min-w-0">
-                    {/* Заголовок и артист */}
-                    <div className="mb-4">
-                      <div className="flex items-center gap-3 flex-wrap mb-1">
-                        <h3 className="text-xl font-bold text-foreground">{release.title}</h3>
-                        {(() => {
-                          const st = statusMap[release.status] || statusMap.draft;
-                          return (
-                            <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full border ${st.color}`}>
-                              {st.label}
-                            </span>
-                          );
-                        })()}
-                      </div>
-                      <p className="text-base text-muted-foreground">{release.mainArtist}</p>
+          filteredReleases.map((release) => {
+            const st = statusMap[release.status] || statusMap.draft;
+            return (
+              <Card key={release.id} className="overflow-hidden hover:shadow-md transition-shadow border-border">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-6">
+                    <div className="relative w-32 h-32 rounded-md overflow-hidden shrink-0 bg-muted">
+                      <Image
+                        src={release.coverUrl || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f"}
+                        alt={release.title}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
                     </div>
 
-                    {/* Метаданные - Строка 1 */}
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-2">
-                      <div>
-                        <span className="text-muted-foreground">UPC</span>
-                        <p className="font-medium">{release.upc || "—"}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="mb-4">
+                        <div className="flex items-center gap-3 flex-wrap mb-1">
+                          <h3 className="text-xl font-bold text-foreground">{release.title}</h3>
+                          <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full border ${st.color}`}>
+                            {st.label}
+                          </span>
+                        </div>
+                        <p className="text-base text-muted-foreground">{release.mainArtist}</p>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Название лейбла</span>
-                        <p className="font-medium">{release.label}</p>
+
+                      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-2">
+                        <div>
+                          <span className="text-muted-foreground">UPC</span>
+                          <p className="font-medium">{release.upc || "—"}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Лейбл</span>
+                          <p className="font-medium">{release.label}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Дата создания</span>
+                          <p className="font-medium">{formatDate(release.createdAt)}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Дата релиза</span>
+                          <p className="font-medium">{release.releaseDate ? formatDate(release.releaseDate) : "—"}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Жанр</span>
+                          <p className="font-medium">{release.genre}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Артист (аккаунт)</span>
+                          <p className="font-medium">{release.artistName || "—"}</p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Метаданные - Строка 2 */}
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Дата создания</span>
-                        <p className="font-medium">{formatDate(release.createdAt)}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Дата релиза</span>
-                        <p className="font-medium">
-                          {release.releaseDate ? formatDate(release.releaseDate) : "—"}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Дата старта</span>
-                        <p className="font-medium">
-                          {release.releaseDate ? formatDate(release.releaseDate) : "—"}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Территории</span>
-                        <p className="font-medium flex items-center gap-1">
-                          WorldWide
-                          <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor">
-                            <path d="M2 6h8M6 2v8" strokeWidth="1.5" strokeLinecap="round"/>
-                          </svg>
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Площадки</span>
-                        <p className="font-medium flex items-center gap-1">
-                          120+
-                          <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor">
-                            <path d="M2 6h8M6 2v8" strokeWidth="1.5" strokeLinecap="round"/>
-                          </svg>
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Жанр</span>
-                        <p className="font-medium">{release.genre}</p>
-                      </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        variant="ghost" size="icon" className="h-9 w-9"
+                        onClick={() => router.push(`/admin/releases/${release.id}`)}
+                        title="Просмотр"
+                      >
+                        <Info className="h-5 w-5" />
+                      </Button>
+                      <Button
+                        variant="ghost" size="icon" className="h-9 w-9"
+                        onClick={() => router.push(`/admin/releases/${release.id}`)}
+                        title="Треки"
+                      >
+                        <ListMusic className="h-5 w-5" />
+                      </Button>
+                      <Button
+                        variant="ghost" size="icon" className="h-9 w-9"
+                        onClick={() => router.push(`/admin/releases/${release.id}`)}
+                        title="Редактировать"
+                      >
+                        <Edit className="h-5 w-5" />
+                      </Button>
+                      <Button
+                        variant="ghost" size="icon" className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        title="Удалить релиз"
+                        onClick={() => { setDeleteError(null); setDeleteTarget(release); }}
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </Button>
                     </div>
                   </div>
-
-                  {/* Блок иконок действий */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => router.push(`/admin/releases/${release.id}`)}
-                      title="Просмотреть всю информацию о релизе"
-                    >
-                      <Info className="h-5 w-5" />
-                    </Button>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => router.push(`/admin/releases/${release.id}`)}
-                      title="Открыть трек-лист и информацию о треках"
-                    >
-                      <ListMusic className="h-5 w-5" />
-                    </Button>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => router.push(`/admin/releases/${release.id}`)}
-                      title="Редактировать релиз"
-                    >
-                      <Edit className="h-5 w-5" />
-                    </Button>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      title="Удалить релиз"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </motion.div>
+
+      {/* Pagination */}
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open && !isDeleting) { setDeleteTarget(null); setDeleteError(null); } }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <Trash2 className="h-5 w-5" />
+              Удалить релиз
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+              Вы уверены, что хотите удалить релиз{" "}
+              <span className="font-semibold text-foreground">«{deleteTarget?.title}»</span>{" "}
+              ({deleteTarget?.mainArtist})?
+              <br /><br />
+              Это действие <span className="font-semibold text-destructive">необратимо</span> — релиз, все его треки, обложка и связанные данные будут удалены навсегда.
+            </DialogDescription>
+          </DialogHeader>
+
+          {deleteError && (
+            <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {deleteError}
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => { setDeleteTarget(null); setDeleteError(null); }}
+              disabled={isDeleting}
+            >
+              Отмена
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="gap-2"
+            >
+              {isDeleting ? (
+                <><Loader2 className="h-4 w-4 animate-spin" />Удаление…</>
+              ) : (
+                <><Trash2 className="h-4 w-4" />Удалить навсегда</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {pagination && pagination.totalPages > 1 && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mt-8 flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page <= 1 || loading}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+
+          {Array.from({ length: Math.min(7, pagination.totalPages) }, (_, i) => {
+            let p: number;
+            if (pagination.totalPages <= 7) {
+              p = i + 1;
+            } else if (page <= 4) {
+              p = i + 1;
+            } else if (page >= pagination.totalPages - 3) {
+              p = pagination.totalPages - 6 + i;
+            } else {
+              p = page - 3 + i;
+            }
+            return (
+              <Button
+                key={p}
+                variant={p === page ? "default" : "outline"}
+                size="icon"
+                className="h-9 w-9 text-sm"
+                onClick={() => setPage(p)}
+                disabled={loading}
+              >
+                {p}
+              </Button>
+            );
+          })}
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
+            disabled={page >= pagination.totalPages || loading}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+
+          <span className="text-sm text-muted-foreground ml-2">
+            Стр. {page} из {pagination.totalPages}
+          </span>
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -4,19 +4,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { toast } from "sonner";
+import { Loader2, Clock } from "lucide-react";
 
 export function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setPending(false);
 
     const formData = new FormData(e.currentTarget);
     const login = formData.get("login") as string;
@@ -32,7 +32,11 @@ export function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Ошибка авторизации");
+        if (data.error === "PENDING_APPROVAL") {
+          setPending(true);
+        } else {
+          setError(data.error || "Ошибка авторизации");
+        }
         setIsLoading(false);
         return;
       }
@@ -54,21 +58,56 @@ export function LoginForm() {
     }
   };
 
+  const header = (
+    <header className="w-full border-b border-[#e6e9ee] bg-white flex-shrink-0">
+      <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center gap-4">
+        <img
+          src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/175b7615-9aa8-4afa-a42b-d4602f227d92-1766680751038.png?width=8000&height=8000&resize=contain"
+          alt="NIGHTVOLT Logo"
+          className="w-14 h-14 object-contain"
+        />
+        <div className="leading-tight">
+          <div className="text-2xl font-bold text-gray-900">NIGHTVOLT</div>
+          <div className="text-sm text-gray-500">Label/Distributor</div>
+        </div>
+      </div>
+    </header>
+  );
+
+  if (pending) {
+    return (
+      <div className="fixed inset-0 flex flex-col bg-[#f7f9fb] text-gray-900 overflow-hidden">
+        {header}
+        <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12 overflow-y-auto">
+          <div className="w-full max-w-md my-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-[#e1e5eb] p-8 sm:p-10 text-center">
+              <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Clock className="w-9 h-9" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-3">
+                Заявка на рассмотрении
+              </h1>
+              <p className="text-gray-600 mb-8">
+                Ваша заявка ещё не была одобрена администратором. Войти в
+                систему можно только после активации аккаунта. С вами свяжется
+                менеджер в указанной при регистрации социальной сети.
+              </p>
+              <Button
+                onClick={() => setPending(false)}
+                className="w-full h-[48px] bg-[#cd792f] hover:bg-[#b8661f] text-white text-base font-medium rounded-lg transition-colors"
+              >
+                Вернуться к форме входа
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 flex flex-col bg-[#f7f9fb] text-gray-900 overflow-hidden">
-        <header className="w-full border-b border-[#e6e9ee] bg-white flex-shrink-0">
-            <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center gap-4">
-              <img 
-                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/175b7615-9aa8-4afa-a42b-d4602f227d92-1766680751038.png?width=8000&height=8000&resize=contain" 
-                alt="NIGHTVOLT Logo" 
-                className="w-14 h-14 object-contain"
-              />
-              <div className="leading-tight">
-                <div className="text-2xl font-bold text-gray-900">NIGHTVOLT</div>
-                <div className="text-sm text-gray-500">Label/Distributor</div>
-              </div>
-            </div>
-        </header>
+      {header}
 
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12 overflow-y-auto">
         <div className="w-full max-w-md my-auto">
@@ -83,7 +122,7 @@ export function LoginForm() {
                   placeholder="Введите логин"
                   required
                   disabled={isLoading}
-                  className="h-[48px] text-base placeholder:text-gray-400 border-[#cfd6e0] focus-visible:ring-2 focus-visible:ring-[#5BBFB9] focus-visible:border-[#5BBFB9]"
+                  className="h-[48px] text-base placeholder:text-gray-400 border-[#cfd6e0] focus-visible:ring-2 focus-visible:ring-[#cd792f] focus-visible:border-[#cd792f]"
                 />
               </div>
 
@@ -94,7 +133,7 @@ export function LoginForm() {
                   placeholder="Введите пароль"
                   required
                   disabled={isLoading}
-                  className="h-[48px] text-base placeholder:text-gray-400 border-[#cfd6e0] focus-visible:ring-2 focus-visible:ring-[#5BBFB9] focus-visible:border-[#5BBFB9]"
+                  className="h-[48px] text-base placeholder:text-gray-400 border-[#cfd6e0] focus-visible:ring-2 focus-visible:ring-[#cd792f] focus-visible:border-[#cd792f]"
                 />
               </div>
 
@@ -106,7 +145,7 @@ export function LoginForm() {
 
               <Button
                 type="submit"
-                className="w-full h-[48px] bg-[#5BBFB9] hover:bg-[#4AAEAA] text-white text-base font-medium rounded-lg transition-colors"
+                className="w-full h-[48px] bg-[#cd792f] hover:bg-[#b8661f] text-white text-base font-medium rounded-lg transition-colors"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -129,16 +168,16 @@ export function LoginForm() {
               </div>
             </form>
           </div>
-            <div className="mt-6 text-center">
-              <span className="text-gray-600">Нет аккаунта? </span>
-              <button 
-                type="button"
-                onClick={() => toast.error("Технический перерыв. В данный момент регистрация недоступна.")}
-                className="text-[#5BBFB9] font-medium hover:underline bg-transparent border-none p-0 cursor-pointer"
-              >
-                Зарегистрироваться
-              </button>
-            </div>
+          <div className="mt-6 text-center">
+            <span className="text-gray-600">Нет аккаунта? </span>
+            <button
+              type="button"
+              onClick={() => router.push("/register")}
+              className="text-[#cd792f] font-medium hover:underline bg-transparent border-none p-0 cursor-pointer"
+            >
+              Зарегистрироваться
+            </button>
+          </div>
         </div>
       </main>
     </div>

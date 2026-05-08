@@ -183,7 +183,7 @@ function SI(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className={`w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 transition-colors bg-background disabled:bg-muted disabled:text-muted-foreground ${props.className || ""}`}
+      className={`w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#cd792f]/40 focus:border-[#cd792f] transition-colors bg-background disabled:bg-muted disabled:text-muted-foreground ${props.className || ""}`}
     />
   );
 }
@@ -195,7 +195,7 @@ function SS({ value, onChange, options, placeholder, disabled }: {
 }) {
   return (
     <Select value={value} onValueChange={onChange} disabled={disabled}>
-      <SelectTrigger className="border-border rounded-lg text-sm focus:ring-teal-500/40 focus:border-teal-500 h-10 bg-background">
+      <SelectTrigger className="border-border rounded-lg text-sm focus:ring-[#cd792f]/40 focus:border-[#cd792f] h-10 bg-background">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
@@ -209,7 +209,7 @@ function SS({ value, onChange, options, placeholder, disabled }: {
 function CB({ checked, onChange, label, hint, disabled }: { checked: boolean; onChange: () => void; label: string; hint?: string; disabled?: boolean }) {
   return (
     <label className="flex items-center gap-2.5 cursor-pointer">
-      <div onClick={() => !disabled && onChange()} className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors shrink-0 cursor-pointer ${checked ? "border-teal-500 bg-teal-500" : "border-border hover:border-teal-500/50"}`}>
+      <div onClick={() => !disabled && onChange()} className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors shrink-0 cursor-pointer ${checked ? "border-[#cd792f] bg-[#cd792f]" : "border-border hover:border-[#cd792f]/50"}`}>
         {checked && <Check className="w-2.5 h-2.5 text-background" />}
       </div>
       <span className="text-sm text-foreground">{label}</span>
@@ -222,7 +222,7 @@ function CB({ checked, onChange, label, hint, disabled }: { checked: boolean; on
 function RB({ checked, onChange, label, hint, disabled }: { checked: boolean; onChange: () => void; label: string; hint?: string; disabled?: boolean }) {
   return (
     <label className="flex items-center gap-3 cursor-pointer group" onClick={() => !disabled && onChange()}>
-      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${checked ? "border-teal-500 bg-teal-500" : "border-border group-hover:border-teal-500/50"}`}>
+      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${checked ? "border-[#cd792f] bg-[#cd792f]" : "border-border group-hover:border-[#cd792f]/50"}`}>
         {checked && <div className="w-2 h-2 rounded-full bg-background" />}
       </div>
       <span className="text-sm text-foreground">{label}</span>
@@ -499,7 +499,7 @@ export default function ArtistUpload() {
         <div className="grid grid-cols-4">
           {TABS.map(tab => (
             <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
-              className={`py-3.5 text-sm font-medium transition-colors border-r last:border-r-0 border-border ${activeTab === tab.id ? "bg-background text-foreground font-semibold border-b-2 border-b-teal-500" : "bg-muted/50 text-muted-foreground hover:bg-background hover:text-foreground"}`}>
+              className={`py-3.5 text-sm font-medium transition-colors border-r last:border-r-0 border-border ${activeTab === tab.id ? "bg-background text-foreground font-semibold border-b-2 border-b-[#cd792f]" : "bg-muted/50 text-muted-foreground hover:bg-background hover:text-foreground"}`}>
               {tab.label}
             </button>
           ))}
@@ -538,7 +538,7 @@ export default function ArtistUpload() {
                 <div className="flex gap-1 mb-3">
                   {(["file", "url"] as const).map(m => (
                     <button key={m} type="button" onClick={() => { setCoverUploadMode(m); if (m === "file") { setCoverUrlInput(""); } }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${coverUploadMode === m ? "border-teal-500 bg-teal-500/10 text-teal-500 dark:text-teal-500 dark:text-teal-400" : "border-border text-muted-foreground hover:border-border"}`}>
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${coverUploadMode === m ? "border-[#cd792f] bg-[#cd792f]/10 text-[#cd792f] dark:text-[#cd792f] dark:text-[#b8661f]" : "border-border text-muted-foreground hover:border-border"}`}>
                       {m === "file" ? <><Upload className="w-3.5 h-3.5" /> Загрузить файл</> : <><LinkIcon className="w-3.5 h-3.5" /> Указать ссылку</>}
                     </button>
                   ))}
@@ -557,7 +557,7 @@ export default function ArtistUpload() {
                         <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-border shrink-0">
                           <Image src={coverPreview} alt="Cover" fill className="object-cover" unoptimized />
                         </div>
-                        <div className="flex items-center gap-1.5 text-teal-500 text-sm"><CheckCircle2 className="w-4 h-4" /> Обложка добавлена</div>
+                        <div className="flex items-center gap-1.5 text-[#cd792f] text-sm"><CheckCircle2 className="w-4 h-4" /> Обложка добавлена</div>
                       </div>
                     )}
                   </div>
@@ -573,7 +573,7 @@ export default function ArtistUpload() {
                             <Progress value={coverProgress} className="h-1.5" />
                             <p className="text-xs text-muted-foreground">{coverProgress}%</p></>
                         ) : coverUrl ? (
-                          <div className="flex items-center gap-2 text-teal-500 text-sm"><CheckCircle2 className="w-4 h-4" /> Обложка загружена</div>
+                          <div className="flex items-center gap-2 text-[#cd792f] text-sm"><CheckCircle2 className="w-4 h-4" /> Обложка загружена</div>
                         ) : null}
                         {canEdit && <button type="button" onClick={() => { setCoverPreview(""); setCoverUrl(""); }} className="text-sm text-muted-foreground hover:text-muted-foreground underline">Удалить</button>}
                         {canEdit && <button type="button" onClick={() => coverRef.current?.click()} className="ml-3 text-sm text-muted-foreground hover:text-muted-foreground underline">Заменить</button>}
@@ -581,7 +581,7 @@ export default function ArtistUpload() {
                     </div>
                   ) : (
                     <div onClick={() => canEdit && !coverUploading && coverRef.current?.click()}
-                      className={`border-2 border-dashed border-border rounded-xl p-8 text-center transition-colors ${canEdit && !coverUploading ? "cursor-pointer hover:border-teal-500 hover:bg-teal-500/10/30" : "opacity-50"}`}>
+                      className={`border-2 border-dashed border-border rounded-xl p-8 text-center transition-colors ${canEdit && !coverUploading ? "cursor-pointer hover:border-[#cd792f] hover:bg-[#cd792f]/10/30" : "opacity-50"}`}>
                       <ImageIcon className="w-10 h-10 mx-auto text-muted-foreground/60 mb-2" />
                       <p className="text-sm text-muted-foreground font-medium">Нажмите для загрузки обложки</p>
                       <p className="text-xs text-muted-foreground mt-1">JPG, PNG • До 5 МБ • 1400×1400 – 6000×6000 px</p>
@@ -611,7 +611,7 @@ export default function ArtistUpload() {
                     </button>
                   </div>
                 ))}
-                <button type="button" onClick={addPerson} disabled={!canEdit} className="text-sm text-muted-foreground hover:text-teal-500 transition-colors mt-1">
+                <button type="button" onClick={addPerson} disabled={!canEdit} className="text-sm text-muted-foreground hover:text-[#cd792f] transition-colors mt-1">
                   Добавить
                 </button>
               </div>
@@ -701,8 +701,8 @@ export default function ArtistUpload() {
             <div className="sticky top-6">
               <ul className="space-y-1">
                 {RELEASE_SECTIONS.map((sec, idx) => (
-                  <li key={sec} onClick={() => setActiveSection(idx)} className={`flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg cursor-pointer transition-colors ${activeSection === idx ? "text-teal-500" : "text-muted-foreground hover:text-foreground"}`}>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${activeSection === idx ? "border-teal-500 bg-teal-500" : "border-border"}`}>
+                  <li key={sec} onClick={() => setActiveSection(idx)} className={`flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg cursor-pointer transition-colors ${activeSection === idx ? "text-[#cd792f]" : "text-muted-foreground hover:text-foreground"}`}>
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${activeSection === idx ? "border-[#cd792f] bg-[#cd792f]" : "border-border"}`}>
                       {activeSection === idx && <Check className="w-2.5 h-2.5 text-background" />}
                     </div>
                     {sec}
@@ -720,7 +720,7 @@ export default function ArtistUpload() {
           {/* Bulk upload zone */}
           <Section title="Загрузка треков">
             <div onClick={() => canEdit && document.getElementById("bulk-track")?.click()}
-              className={`border-2 border-dashed border-border rounded-xl p-10 text-center transition-colors ${canEdit ? "cursor-pointer hover:border-teal-500 hover:bg-teal-500/10/30" : "opacity-50"}`}>
+              className={`border-2 border-dashed border-border rounded-xl p-10 text-center transition-colors ${canEdit ? "cursor-pointer hover:border-[#cd792f] hover:bg-[#cd792f]/10/30" : "opacity-50"}`}>
               <input id="bulk-track" type="file" accept=".wav,.flac,.mp3,.aac" multiple className="hidden" disabled={!canEdit}
                 onChange={e => {
                   Array.from(e.target.files || []).forEach((file, i) => {
@@ -759,7 +759,7 @@ export default function ArtistUpload() {
               <div className="flex items-center gap-3 px-4 py-3 bg-muted/40 border-b border-border">
                 <GripVertical className="w-4 h-4 text-muted-foreground/60 cursor-grab" />
                 <span className="text-sm font-semibold text-foreground">Трек {track.trackNumber}</span>
-                {track.isUploaded ? <span className="flex items-center gap-1 text-xs text-teal-500"><CheckCircle2 className="w-3.5 h-3.5" /> Загружен</span>
+                {track.isUploaded ? <span className="flex items-center gap-1 text-xs text-[#cd792f]"><CheckCircle2 className="w-3.5 h-3.5" /> Загружен</span>
                   : track.uploadProgress !== undefined ? <span className="flex items-center gap-1 text-xs text-blue-500"><Loader2 className="w-3.5 h-3.5 animate-spin" /> {track.uploadProgress}%</span>
                   : <span className="text-xs text-orange-500">Не загружен</span>}
                 <div className="flex-1" />
@@ -773,7 +773,7 @@ export default function ArtistUpload() {
                     <div className="flex gap-1 mb-2">
                       {(["file", "url"] as const).map(m => (
                         <button key={m} type="button" onClick={() => updateTrack(track.id, "uploadMode", m)}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${track.uploadMode === m ? "border-teal-500 bg-teal-500/10 text-teal-500 dark:text-teal-500 dark:text-teal-400" : "border-border text-muted-foreground hover:border-border"}`}>
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${track.uploadMode === m ? "border-[#cd792f] bg-[#cd792f]/10 text-[#cd792f] dark:text-[#cd792f] dark:text-[#b8661f]" : "border-border text-muted-foreground hover:border-border"}`}>
                           {m === "file" ? <><Upload className="w-3.5 h-3.5" /> Загрузить файл</> : <><LinkIcon className="w-3.5 h-3.5" /> Указать ссылку</>}
                         </button>
                       ))}
@@ -783,7 +783,7 @@ export default function ArtistUpload() {
                         const inp = document.createElement("input"); inp.type = "file"; inp.accept = ".wav,.flac,.mp3,.aac";
                         inp.onchange = e => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleTrackFile(track.id, f); }; inp.click();
                       }}
-                        className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-teal-500 hover:bg-teal-500/10/20 transition-colors">
+                        className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-[#cd792f] hover:bg-[#cd792f]/10/20 transition-colors">
                         <Music className="w-8 h-8 mx-auto text-muted-foreground/60 mb-2" />
                         <p className="text-sm text-muted-foreground">Нажмите для загрузки аудио</p>
                         <p className="text-xs text-muted-foreground mt-1">WAV, FLAC, MP3, AAC</p>
@@ -815,7 +815,7 @@ export default function ArtistUpload() {
 
                 {track.isUploaded && (
                   <div className="flex items-center gap-3 bg-muted/40 rounded-lg px-3 py-2.5">
-                    {track.uploadMode === "url" ? <LinkIcon className="w-4 h-4 text-teal-500 shrink-0" /> : <Music className="w-4 h-4 text-teal-500 shrink-0" />}
+                    {track.uploadMode === "url" ? <LinkIcon className="w-4 h-4 text-[#cd792f] shrink-0" /> : <Music className="w-4 h-4 text-[#cd792f] shrink-0" />}
                     <span className="text-sm text-muted-foreground flex-1 truncate">{track.fileName || track.url || "Трек загружен"}</span>
                     <button type="button" disabled={!canEdit} className="text-xs text-muted-foreground hover:text-muted-foreground underline"
                       onClick={() => updateTrack(track.id, "isUploaded", false)}>Заменить</button>
@@ -850,7 +850,7 @@ export default function ArtistUpload() {
                         </button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => addTrackPerson(track.id)} disabled={!canEdit} className="text-sm text-muted-foreground hover:text-teal-500 transition-colors">
+                    <button type="button" onClick={() => addTrackPerson(track.id)} disabled={!canEdit} className="text-sm text-muted-foreground hover:text-[#cd792f] transition-colors">
                       Добавить
                     </button>
                   </div>
@@ -860,13 +860,13 @@ export default function ArtistUpload() {
                 <Section title="Права" description="Укажите доли авторского и смежного права">
                   <div className="grid grid-cols-2 gap-4">
                     <Field label="Авторские права" hint="Доля авторских прав. Сумма всех долей должна составлять 100%">
-                      <div className="flex items-center border border-border rounded-lg overflow-hidden bg-background focus-within:ring-2 focus-within:ring-teal-500/40 focus-within:border-teal-500">
+                      <div className="flex items-center border border-border rounded-lg overflow-hidden bg-background focus-within:ring-2 focus-within:ring-[#cd792f]/40 focus-within:border-[#cd792f]">
                         <span className="px-3 py-2.5 bg-muted/40 border-r border-border text-muted-foreground text-sm">©</span>
                         <input type="number" step="0.01" min="0" max="100" value={track.copyrightShare} onChange={e => updateTrack(track.id, "copyrightShare", e.target.value)} className="flex-1 px-3 py-2.5 text-sm text-foreground focus:outline-none" disabled={!canEdit} />
                       </div>
                     </Field>
                     <Field label="Смежные права" hint="Доля смежных прав. Релиз может быть доставлен на площадки только при наличии 100%">
-                      <div className="flex items-center border border-border rounded-lg overflow-hidden bg-background focus-within:ring-2 focus-within:ring-teal-500/40 focus-within:border-teal-500">
+                      <div className="flex items-center border border-border rounded-lg overflow-hidden bg-background focus-within:ring-2 focus-within:ring-[#cd792f]/40 focus-within:border-[#cd792f]">
                         <span className="px-3 py-2.5 bg-muted/40 border-r border-border text-muted-foreground text-sm">℗</span>
                         <input type="number" step="0.01" min="0" max="100" value={track.relatedRightsShare} onChange={e => updateTrack(track.id, "relatedRightsShare", e.target.value)} className="flex-1 px-3 py-2.5 text-sm text-foreground focus:outline-none" disabled={!canEdit} />
                       </div>
@@ -902,7 +902,7 @@ export default function ArtistUpload() {
                 <Field label="Текст трека">
                   <textarea value={track.lyrics} onChange={e => updateTrack(track.id, "lyrics", e.target.value)}
                     placeholder="Введите точный текст трека..." rows={5} maxLength={10000} disabled={!canEdit}
-                    className="w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 resize-none transition-colors disabled:bg-muted/40 disabled:text-muted-foreground" />
+                    className="w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#cd792f]/40 focus:border-[#cd792f] resize-none transition-colors disabled:bg-muted/40 disabled:text-muted-foreground" />
                   <p className="text-xs text-muted-foreground">{track.lyrics.length} / 10 000</p>
                 </Field>
               </div>
@@ -910,7 +910,7 @@ export default function ArtistUpload() {
           ))}
 
           <button type="button" onClick={addTrack} disabled={!canEdit}
-            className="w-full border-2 border-dashed border-border rounded-xl py-3.5 text-sm text-muted-foreground hover:border-teal-500 hover:text-teal-500 flex items-center justify-center gap-2 transition-colors">
+            className="w-full border-2 border-dashed border-border rounded-xl py-3.5 text-sm text-muted-foreground hover:border-[#cd792f] hover:text-[#cd792f] flex items-center justify-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Добавить трек
           </button>
         </div>
@@ -923,7 +923,7 @@ export default function ArtistUpload() {
             <div className="flex gap-2 mb-4 flex-wrap">
               {(["all", "selected"] as const).map(m => (
                 <button key={m} type="button" onClick={() => setPlatformMode(m)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${platformMode === m ? "border-teal-500 bg-teal-500/10 text-teal-500 dark:text-teal-500 dark:text-teal-400" : "border-border text-muted-foreground hover:border-border"}`}>
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${platformMode === m ? "border-[#cd792f] bg-[#cd792f]/10 text-[#cd792f] dark:text-[#cd792f] dark:text-[#b8661f]" : "border-border text-muted-foreground hover:border-border"}`}>
                   {m === "all" ? "Все площадки" : "Выбранные площадки"}
                 </button>
               ))}
@@ -932,9 +932,9 @@ export default function ArtistUpload() {
               {PLATFORMS.map(p => {
                 const active = platformMode === "all" || selectedPlatforms.includes(p);
                 return (
-                  <label key={p} className="flex items-center gap-2.5 p-3 border border-border rounded-lg cursor-pointer hover:border-teal-500/50 transition-colors"
+                  <label key={p} className="flex items-center gap-2.5 p-3 border border-border rounded-lg cursor-pointer hover:border-[#cd792f]/50 transition-colors"
                     onClick={() => { if (platformMode === "selected") setSelectedPlatforms(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]); }}>
-                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${active ? "border-teal-500 bg-teal-500" : "border-border"}`}>
+                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${active ? "border-[#cd792f] bg-[#cd792f]" : "border-border"}`}>
                       {active && <Check className="w-2.5 h-2.5 text-background" />}
                     </div>
                     <span className="text-sm text-foreground">{p}</span>
@@ -950,13 +950,13 @@ export default function ArtistUpload() {
             <div className="flex gap-2 flex-wrap mb-4">
               {(["all", "selected", "except"] as const).map(m => (
                 <button key={m} type="button" onClick={() => setCountryMode(m)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${countryMode === m ? "border-teal-500 bg-teal-500/10 text-teal-500 dark:text-teal-500 dark:text-teal-400" : "border-border text-muted-foreground hover:border-border"}`}>
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${countryMode === m ? "border-[#cd792f] bg-[#cd792f]/10 text-[#cd792f] dark:text-[#cd792f] dark:text-[#b8661f]" : "border-border text-muted-foreground hover:border-border"}`}>
                   {{ all: "Все страны", selected: "Выбранные страны", except: "Все кроме выбранных" }[m]}
                 </button>
               ))}
               <button type="button"
                 onClick={() => { setCountryMode("selected"); setSelectedCountries(CIS_COUNTRIES); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium border border-border text-muted-foreground hover:border-teal-500/50 hover:text-teal-500 transition-colors">
+                className="px-4 py-2 rounded-lg text-sm font-medium border border-border text-muted-foreground hover:border-[#cd792f]/50 hover:text-[#cd792f] transition-colors">
                 Быстрый выбор: СНГ
               </button>
             </div>
@@ -965,9 +965,9 @@ export default function ArtistUpload() {
                 {COUNTRIES.map(c => {
                   const active = selectedCountries.includes(c.code);
                   return (
-                    <label key={c.code} className="flex items-center gap-2 p-2.5 border border-border rounded-lg cursor-pointer hover:border-teal-500/50 transition-colors"
+                    <label key={c.code} className="flex items-center gap-2 p-2.5 border border-border rounded-lg cursor-pointer hover:border-[#cd792f]/50 transition-colors"
                       onClick={() => setSelectedCountries(prev => prev.includes(c.code) ? prev.filter(x => x !== c.code) : [...prev, c.code])}>
-                      <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${active ? "border-teal-500 bg-teal-500" : "border-border"}`}>
+                      <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${active ? "border-[#cd792f] bg-[#cd792f]" : "border-border"}`}>
                         {active && <Check className="w-2.5 h-2.5 text-background" />}
                       </div>
                       <span className="text-xs text-foreground">{c.name}</span>
@@ -985,7 +985,7 @@ export default function ArtistUpload() {
         <div className="space-y-6">
           <Section title="Проверка перед отправкой" description="Система автоматически анализирует заполненные данные и показывает список ошибок">
             {validationErrors.length === 0 ? (
-              <div className="flex items-center gap-3 p-4 bg-teal-500/10 border border-teal-200 rounded-xl text-teal-500 dark:text-teal-500 dark:text-teal-400">
+              <div className="flex items-center gap-3 p-4 bg-[#cd792f]/10 border border-[#f0c8a0] rounded-xl text-[#cd792f] dark:text-[#cd792f] dark:text-[#b8661f]">
                 <CheckCircle2 className="w-5 h-5 shrink-0" />
                 <div>
                   <p className="font-medium text-sm">Всё в порядке!</p>
@@ -1015,7 +1015,7 @@ export default function ArtistUpload() {
             <Section title="Комментарий для модератора">
               <textarea value={artistComment} onChange={e => setArtistComment(e.target.value)}
                 placeholder="Например: срочная публикация, особые требования..." rows={3} disabled={!canEdit}
-                className="w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 resize-none transition-colors disabled:bg-muted/40 disabled:text-muted-foreground" />
+                className="w-full border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#cd792f]/40 focus:border-[#cd792f] resize-none transition-colors disabled:bg-muted/40 disabled:text-muted-foreground" />
             </Section>
           </div>
 
@@ -1044,7 +1044,7 @@ export default function ArtistUpload() {
               <div key={item.url} className="flex items-start gap-3 p-4 bg-muted/40 rounded-xl border border-border">
                 <Info className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                 <div>
-                  <button type="button" onClick={() => window.open(item.url, "_blank", "noopener,noreferrer")} className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-teal-500 transition-colors">
+                  <button type="button" onClick={() => window.open(item.url, "_blank", "noopener,noreferrer")} className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[#cd792f] transition-colors">
                     {item.title} <ExternalLink className="w-3.5 h-3.5" />
                   </button>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.text}</p>

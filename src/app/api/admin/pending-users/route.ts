@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { db } from '@/db';
 import { artists } from '@/db/schema';
-import { eq, and, isNotNull } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,11 +21,14 @@ export async function GET(request: NextRequest) {
         emailVerified: artists.emailVerified,
         isApproved: artists.isApproved,
         accessRequestMessage: artists.accessRequestMessage,
+        socialNetwork: artists.socialNetwork,
+        howDidYouHear: artists.howDidYouHear,
+        password: artists.password,
         createdAt: artists.createdAt,
       })
       .from(artists)
       .where(and(
-        eq(artists.isApproved, false), 
+        eq(artists.isApproved, false),
         eq(artists.requiresApproval, true)
       ))
       .all();

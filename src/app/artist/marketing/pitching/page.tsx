@@ -112,7 +112,7 @@ export default function PitchingPage() {
 
       {/* Success message */}
       {success && (
-        <div className="flex items-center gap-3 mb-6 p-4 bg-teal-500/10 border border-teal-500/30 rounded-xl text-teal-500 text-sm">
+        <div className="flex items-center gap-3 mb-6 p-4 bg-[#cd792f]/10 border border-[#cd792f]/30 rounded-xl text-[#cd792f] text-sm">
           <CheckCircle2 className="w-5 h-5 shrink-0" />
           {success}
         </div>
@@ -138,7 +138,7 @@ export default function PitchingPage() {
                 <button
                   type="button"
                   onClick={() => setShowReleaseDropdown(v => !v)}
-                  className="w-full flex items-center gap-3 border border-border rounded-xl px-3 py-2.5 text-sm text-left hover:border-teal-500 transition-colors bg-background"
+                  className="w-full flex items-center gap-3 border border-border rounded-xl px-3 py-2.5 text-sm text-left hover:border-[#cd792f] transition-colors bg-background"
                 >
                   {selectedRelease ? (
                     <>
@@ -185,7 +185,7 @@ export default function PitchingPage() {
                 onChange={e => setPromoText(e.target.value)}
                 rows={6}
                 placeholder="Расскажите о своём релизе: чем он уникален, какова его концепция, на какую аудиторию рассчитан..."
-                className="w-full border border-border rounded-xl px-3 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 resize-none transition-colors"
+                className="w-full border border-border rounded-xl px-3 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#cd792f]/40 focus:border-[#cd792f] resize-none transition-colors"
               />
               <p className="text-xs text-muted-foreground">{promoText.length} символов</p>
             </div>

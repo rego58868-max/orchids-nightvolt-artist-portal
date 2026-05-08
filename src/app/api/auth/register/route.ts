@@ -3,20 +3,18 @@ import { db } from '@/db';
 import { artists } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
-import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, firstName, lastName, artistNameOrLabel } = await request.json();
+    const { email, password, firstName, lastName, artistName, socialNetwork, howDidYouHear } = await request.json();
 
-    if (!email || !password || !firstName || !lastName || !artistNameOrLabel) {
+    if (!email || !password || !firstName || !artistName || !socialNetwork) {
       return NextResponse.json(
-        { error: 'Все поля обязательны' },
+        { error: 'Заполните все обязательные поля' },
         { status: 400 }
       );
     }
 
-    // Check if user already exists
     const [existingUser] = await db
       .select()
       .from(artists)
@@ -30,31 +28,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user in Turso
     const uid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    
+
     await db.insert(artists).values({
       uid,
       email,
       password: hashedPassword,
-      name: `${firstName} ${lastName}`,
-      surname: lastName,
-      artistName: artistNameOrLabel,
-        plan: 'none',
-        emailVerified: true, // Mark as verified to bypass code check
-        isApproved: false,   // But keep as not approved for manual moderation
-        requiresApproval: true, // New field to distinguish self-registration
-        accessRequestMessage: 'Автоматическая заявка при регистрации',
-
+      name: firstName,
+      surname: lastName || '',
+      artistName,
+      plan: 'none',
+      emailVerified: true,
+      isApproved: false,
+      requiresApproval: true,
+      accessRequestMessage: null,
+      socialNetwork: socialNetwork || null,
+      howDidYouHear: howDidYouHear || null,
       createdAt: new Date().toISOString(),
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Регистрация прошла успешно. Ваша заявка находится на рассмотрении модератором.',
+      message: 'Заявка отправлена. С вами свяжется менеджер для уточнения деталей.',
     });
   } catch (error) {
     console.error('Registration error:', error);

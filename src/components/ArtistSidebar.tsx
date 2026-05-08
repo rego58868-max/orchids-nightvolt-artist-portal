@@ -90,14 +90,14 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Новый релиз",
       href: "/artist/upload",
       icon: (active: boolean) => (
-        <div className="text-[#4FD1C5]">
+        <div className="text-[#cd792f]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="16" height="16" rx="4" />
             <path d="M7 13V7l4-1v5" />
             <circle cx="6.5" cy="13" r="1" />
             <circle cx="10.5" cy="12" r="1" />
             <g transform="translate(14, 14)">
-               <circle cx="4" cy="4" r="4" fill="#4FD1C5" stroke="none" />
+               <circle cx="4" cy="4" r="4" fill="#cd792f" stroke="none" />
                <path d="M4 2v4M2 4h4" stroke="white" strokeWidth="1" />
             </g>
           </svg>
@@ -110,7 +110,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Музыка",
       href: "/artist/releases",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18V5l12-2v13" />
             <circle cx="6" cy="18" r="3" />
@@ -131,7 +131,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Аналитика",
       href: "/artist/analytics",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="5" />
             <path d="M8 15v-4" />
@@ -146,7 +146,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Финансы",
       href: "/artist/wallet",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <path d="M14 2v6h6" />
@@ -162,7 +162,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Инструменты",
       href: "/artist/tools/lyrics",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
           </svg>
@@ -178,7 +178,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Новости",
       href: "/artist/dashboard",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="4" y="5" width="16" height="15" rx="2" />
             <path d="M8 3v4M16 3v4" />
@@ -193,11 +193,11 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Поддержка",
       href: "/artist/support",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 6h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
             <path d="M22 8l-10 7L2 8" />
-            <circle cx="19" cy="7" r="3" fill={active ? "#4FD1C5" : "#6B7280"} stroke="none" />
+            <circle cx="19" cy="7" r="3" fill={active ? "#cd792f" : "#6B7280"} stroke="none" />
           </svg>
         </div>
       ),
@@ -213,7 +213,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
       label: "Маркетинг",
       href: "/artist/marketing/pitching",
       icon: (active: boolean) => (
-        <div className={cn(active ? "text-[#4FD1C5]" : "text-neutral-500")}>
+        <div className={cn(active ? "text-[#cd792f]" : "text-neutral-500")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
           </svg>
@@ -289,7 +289,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
                       className={cn(
                         "w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl transition-all duration-200",
                       item.active 
-                        ? "text-[#4FD1C5] bg-[#4FD1C5]/5" 
+                        ? "text-[#cd792f] bg-[#cd792f]/5" 
                         : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/5"
                     )}
                   >
@@ -323,7 +323,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
                                   className={cn(
                                     "block py-2 text-[13px] transition-colors",
                                     isSubActive 
-                                      ? "text-[#4FD1C5]" 
+                                      ? "text-[#cd792f]" 
                                       : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300"
                                   )}
                                 >
@@ -343,7 +343,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
                   className={cn(
                     "flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200",
                     item.active 
-                      ? "text-[#4FD1C5] bg-[#4FD1C5]/5" 
+                      ? "text-[#cd792f] bg-[#cd792f]/5" 
                       : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/5",
                     isCollapsed && "justify-center px-0"
                   )}
@@ -354,7 +354,7 @@ export function ArtistSidebar({ user, onRefresh }: ArtistSidebarProps) {
                   {!isCollapsed && (
                     <span className={cn(
                       "font-medium text-[15px]",
-                      item.isPrimary && "text-[#4FD1C5]"
+                      item.isPrimary && "text-[#cd792f]"
                     )}>
                       {item.label}
                     </span>

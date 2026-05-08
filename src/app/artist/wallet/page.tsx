@@ -267,7 +267,7 @@ export default function WalletPage() {
           </div>
           <button
             onClick={() => setShowHowToGet(true)}
-            className="mt-4 text-sm text-[#5BBFB9] hover:underline cursor-pointer"
+            className="mt-4 text-sm text-[#cd792f] hover:underline cursor-pointer"
           >
             Как получить
           </button>
@@ -365,7 +365,7 @@ export default function WalletPage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="p-2 rounded-lg hover:bg-muted transition-colors text-[#5BBFB9]"
+                              className="p-2 rounded-lg hover:bg-muted transition-colors text-[#cd792f]"
                             >
                               <Download className="w-5 h-5" />
                             </a>
@@ -427,7 +427,7 @@ export default function WalletPage() {
                                     href={report.fileUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-sm text-[#5BBFB9] hover:underline"
+                                    className="inline-flex items-center gap-2 text-sm text-[#cd792f] hover:underline"
                                   >
                                     <Download className="w-4 h-4" />
                                     Скачать {report.fileName || "файл"}

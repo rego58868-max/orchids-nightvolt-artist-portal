@@ -21,6 +21,8 @@ export const artists = sqliteTable('artists', {
     emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
   verificationCode: text('verification_code'),
   accessRequestMessage: text('access_request_message'),
+  socialNetwork: text('social_network'),
+  howDidYouHear: text('how_did_you_hear'),
   isFrozen: integer('is_frozen', { mode: 'boolean' }).default(false),
   managerId: integer('manager_id').references(() => artists.id),
   theme: text('theme').notNull().default('light'),

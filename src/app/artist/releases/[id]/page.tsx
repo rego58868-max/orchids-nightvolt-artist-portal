@@ -258,7 +258,7 @@ export default function ReleaseView() {
                     <div className="ml-10 flex items-center gap-2 text-xs text-muted-foreground mb-3">
                       <LinkIcon className="w-3.5 h-3.5" />
                       <a href={track.url} target="_blank" rel="noopener noreferrer"
-                        className="hover:text-teal-500 truncate max-w-sm transition-colors">
+                        className="hover:text-[#cd792f] truncate max-w-sm transition-colors">
                         {track.url}
                       </a>
                     </div>
@@ -267,7 +267,7 @@ export default function ReleaseView() {
                   {track.lyrics && (
                     <div className="ml-10">
                       <button onClick={() => toggleLyrics(track.id)}
-                        className="text-xs text-teal-500 hover:text-teal-400 font-medium transition-colors mb-2">
+                        className="text-xs text-[#cd792f] hover:text-[#b8661f] font-medium transition-colors mb-2">
                         {expandedLyrics.has(track.id) ? "Скрыть текст ↑" : "Показать текст ↓"}
                       </button>
                       {expandedLyrics.has(track.id) && (

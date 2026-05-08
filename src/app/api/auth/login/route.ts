@@ -47,6 +47,12 @@ export async function POST(request: NextRequest) {
           { status: 403 }
         );
       }
+      if (error instanceof Error && error.message === 'PENDING_APPROVAL') {
+        return NextResponse.json(
+          { error: 'PENDING_APPROVAL' },
+          { status: 403 }
+        );
+      }
       if (error instanceof Error && error.message === 'FROZEN') {
         return NextResponse.json(
           { error: 'Ваш аккаунт заморожен администратором. Обратитесь в поддержку.' },

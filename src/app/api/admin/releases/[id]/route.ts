@@ -1,9 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionFromRequest } from '@/lib/auth';
 import { db } from '@/db';
-import { releases, releaseHistory, tracks, artists } from '@/db/schema';
+import { releases, releaseHistory, tracks, artists, lyricsSubmissions, pitchings } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { sendTelegramMessage, buildReleaseNotification } from '@/lib/telegram';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+async function deleteSupabaseFile(bucket: string, path: string) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function extractSupabasePath(url: string, bucket: string): string | null {
+  if (!url) return null;
+  // URL format: .../storage/v1/object/public/{bucket}/{path}
+  const marker = `/object/public/${bucket}/`;
+  const idx = url.indexOf(marker);
+  if (idx === -1) return null;
+  return url.slice(idx + marker.length);
+}
 
 // ─── Helper: send Telegram notification if artist has linked Telegram ─────────
 
@@ -274,6 +298,78 @@ export async function PUT(
     console.error('Error updating release:', error);
     return NextResponse.json(
       { error: 'Ошибка при обновлении релиза: ' + (error instanceof Error ? error.message : 'Неизвестная ошибка') },
+      { status: 500 }
+    );
+  }
+}
+
+// ─── DELETE — full release removal including Supabase files ──────────────────
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getSessionFromRequest(request);
+
+    if (!session || !session.isAdmin) {
+      return NextResponse.json(
+        { error: 'Требуется авторизация администратора' },
+        { status: 401 }
+      );
+    }
+
+    const releaseId = parseInt(params.id);
+    if (isNaN(releaseId)) {
+      return NextResponse.json({ error: 'Некорректный ID релиза' }, { status: 400 });
+    }
+
+    // Fetch release to get file URLs before deletion
+    const [release] = await db
+      .select({ coverUrl: releases.coverUrl, id: releases.id, title: releases.title })
+      .from(releases)
+      .where(eq(releases.id, releaseId))
+      .limit(1);
+
+    if (!release) {
+      return NextResponse.json({ error: 'Релиз не найден' }, { status: 404 });
+    }
+
+    // Fetch track URLs for Supabase cleanup
+    const releaseTracks = await db
+      .select({ url: tracks.url })
+      .from(tracks)
+      .where(eq(tracks.releaseId, releaseId));
+
+    // ── Delete all DB rows in dependency order ────────────────────────────────
+    await db.delete(releaseHistory).where(eq(releaseHistory.releaseId, releaseId));
+    await db.delete(lyricsSubmissions).where(eq(lyricsSubmissions.releaseId, releaseId));
+    await db.delete(pitchings).where(eq(pitchings.releaseId, releaseId));
+    await db.delete(tracks).where(eq(tracks.releaseId, releaseId));
+    await db.delete(releases).where(eq(releases.id, releaseId));
+
+    // ── Delete files from Supabase Storage (best-effort, don't block response) ─
+    const fileCleanupPromises: Promise<boolean>[] = [];
+
+    const coverPath = extractSupabasePath(release.coverUrl, 'release-covers');
+    if (coverPath) {
+      fileCleanupPromises.push(deleteSupabaseFile('release-covers', coverPath));
+    }
+
+    for (const track of releaseTracks) {
+      const trackPath = extractSupabasePath(track.url, 'release-tracks');
+      if (trackPath) {
+        fileCleanupPromises.push(deleteSupabaseFile('release-tracks', trackPath));
+      }
+    }
+
+    await Promise.allSettled(fileCleanupPromises);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting release:', error);
+    return NextResponse.json(
+      { error: 'Ошибка при удалении релиза: ' + (error instanceof Error ? error.message : 'Неизвестная ошибка') },
       { status: 500 }
     );
   }
